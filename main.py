@@ -42,15 +42,30 @@ def input_phone():
 def input_address():
     return input('Введите адрес(город) контакта: ').title()
 
-def read_phonebook():
-    with open('phonebook.txt', 'r', encoding='utf-8') as file:
+def read_phonebook(file = 'phonebook.txt'):
+    with open(file, 'r', encoding='utf-8') as file:
         contacts_str = file.read()
     return contacts_str.rstrip().split('\n\n')
 
 def write_phonebook(contact_list):
     # print(str.join('\n\n', contact_list))
     with open('phonebook.txt', 'w', encoding='utf-8') as file:
-        file.write(str.join('\n\n', contact_list))
+        file.write(str.join('\n\n', contact_list) + '\n\n')
+
+def copy_data():
+    file = input('Введите имя файла: ')
+    idx = int(input('выберите индекс контакта: '))
+    contact_list = read_phonebook()
+    while ( idx > len(contact_list) - 1 ):
+        print('некорректный ввод! Индекс должен быть меньше ' + len(contact_list))
+        idx = input('выберите индекс контакта: ')
+
+    contact = contact_list[idx]
+
+    with open(file, 'a', encoding='utf-8') as file:
+        file.write(contact + '\n\n')#дозаписываем контакт в файл
+
+
 
 def make_contact(surname, name, patronymic, phone, address):
     return f'{surname} {name} {patronymic}: {phone}\n{address}' 
@@ -154,12 +169,13 @@ def interface():
             '3. Поиск контакта\n'
             '4. Редактирование контакта\n'
             '5. Удаление контакта\n'
+            '7. Копирование данных\n'
             '6. Выход'
         )
         print()#пустая строка для красоты
 
         var = input('выберите вариант действия: ')
-        while var not in ('1', '2', '3', '4', '5', '6'):
+        while var not in ('1', '2', '3', '4', '5', '6', '7'):
             print('некорректный ввод!')
             var = input('выберите вариант действия: ')
         print()
@@ -175,6 +191,8 @@ def interface():
                 edit_contact()
             case '5':
                 delete_contact()
+            case '7':
+                copy_data()
             case '6':
                 print('До свидания!')
         print()
